@@ -18,7 +18,7 @@ returns Figure~\ref{fig:phy}B, where the branch leading to $t_1$ was
 broken into a branch leading from the root to $t_1$ and a shorter branch
 leading from the root to the rest of the tree.
 
-\begin{figure}
+\begin{figure}[ht]
   \begin{center}
     \begin{tabular}{ccc}
         \textbf{A} & \textcolor{white}{xxx}& \textbf{B}\\
@@ -34,14 +34,17 @@ The program \texttt{midRoot} reads one or more trees and prints their
 midpoint rooted versions. Like many C programs, it starts with include
 statements, followed by function declarations, their implementations,
 and finally the main function.
+
 \nwenddocs{}\nwbegincode{2}\sublabel{NW0-5D8f4-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-5D8f4-1}}}\moddef{midRoot.c~{\nwtagstyle{}\subpageref{NW0-5D8f4-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
 \LA{}Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}\RA{}
 \LA{}Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}\RA{}
 \LA{}Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}\RA{}
 \LA{}Main function~{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}\RA{}
+
 \nwnotused{midRoot.c}\nwendcode{}\nwbegindocs{3}\nwdocspar
 The \texttt{main} function is implemented first, as it
 determines the rest.
+
 \nwenddocs{}\nwbegincode{4}\sublabel{NW0-32ejEQ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}}\moddef{Main function~{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwenddeflinemarkup
 int \nwlinkedidentc{main}{NW0-32ejEQ-1}(int argc, char **argv) \{\nwindexdefn{\nwixident{main}}{main}{NW0-32ejEQ-1}
   Args *args = getArgs(argc, argv);
@@ -52,34 +55,42 @@ int \nwlinkedidentc{main}{NW0-32ejEQ-1}(int argc, char **argv) \{\nwindexdefn{\n
   free(getProgName());
   return 0;
 \}
+
 \nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{main}}{main}}}\nwendcode{}\nwbegindocs{5}\nwdocspar
 The functions \texttt{getArgs} and \texttt{freeArgs} are declared in
 \texttt{interface.h}, and the functions \texttt{setProgName} and
 \texttt{getProgName} in \texttt{eprintf.h}. Both of these headers and
 their implementations are part of this package. The function
 \texttt{free} is part of the standard library.
+
 \nwenddocs{}\nwbegincode{6}\sublabel{NW0-3ji0t0-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\moddef{Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{\relax}{NW0-3ji0t0-2}\nwenddeflinemarkup
 #include "interface.h"
 #include "eprintf.h"
 #include <stdlib.h>
+
 \nwalsodefined{\\{NW0-3ji0t0-2}\\{NW0-3ji0t0-3}}\nwused{\\{NW0-5D8f4-1}}\nwendcode{}\nwbegindocs{7}\nwdocspar
 The user might have requested the
 program version, in which case a---rather modest---splash screen is
 printed.
+
 \nwenddocs{}\nwbegincode{8}\sublabel{NW0-3hJosa-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}}\moddef{Deal with user interface~{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwprevnextdefs{\relax}{NW0-3hJosa-2}\nwenddeflinemarkup
 if (args->v)
   printSplash(args);
+
 \nwalsodefined{\\{NW0-3hJosa-2}}\nwused{\\{NW0-32ejEQ-1}}\nwendcode{}\nwbegindocs{9}\nwdocspar
 Alternatively, the user might request help, or an error has
 occurred. In both cases a usage message is printed. Printing
 usage or splash is declared in \texttt{interface.h}, which is already included.
+
 \nwenddocs{}\nwbegincode{10}\sublabel{NW0-3hJosa-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3hJosa-2}}}\moddef{Deal with user interface~{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwprevnextdefs{NW0-3hJosa-1}{\relax}\nwenddeflinemarkup
 if (args->h || args->err)
   printUsage();
+
 \nwused{\\{NW0-32ejEQ-1}}\nwendcode{}\nwbegindocs{11}\nwdocspar
 Input is dealt with in the standard UNIX manner: If the user lists no
 files, \texttt{stdin} is the input stream; otherwise, each file in
 turn becomes the input stream.
+
 \nwenddocs{}\nwbegincode{12}\sublabel{NW0-4EgRTZ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}}\moddef{Deal with input files~{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwenddeflinemarkup
 if (args->nf == 0) \{
   FILE *fp = stdin;
@@ -91,10 +102,13 @@ if (args->nf == 0) \{
     fclose(fp);
   \}
 \}
+
 \nwused{\\{NW0-32ejEQ-1}}\nwidentuses{\\{{\nwixident{scanFile}}{scanFile}}}\nwindexuse{\nwixident{scanFile}}{scanFile}{NW0-4EgRTZ-1}\nwendcode{}\nwbegindocs{13}\nwdocspar
 The function \texttt{scanFile} is declared.
+
 \nwenddocs{}\nwbegincode{14}\sublabel{NW0-Xqfpb-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\moddef{Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{\relax}{NW0-Xqfpb-2}\nwenddeflinemarkup
 void \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(FILE *fp, Args *args);
+
 \nwalsodefined{\\{NW0-Xqfpb-2}\\{NW0-Xqfpb-3}\\{NW0-Xqfpb-4}}\nwused{\\{NW0-5D8f4-1}}\nwidentuses{\\{{\nwixident{scanFile}}{scanFile}}}\nwindexuse{\nwixident{scanFile}}{scanFile}{NW0-Xqfpb-1}\nwendcode{}\nwbegindocs{15}\nwdocspar
 It retrieves each tree from a given file, roots it, and then prints it
 in the Newick format favored by biologists. Joe Felsenstein, who is
@@ -104,6 +118,7 @@ one of its inventors, describes it on his web site:
 http://evolution.genetics.washington.edu/phylip/newicktree.html
 \end{verbatim}
 \normalsize
+
 \nwenddocs{}\nwbegincode{16}\sublabel{NW0-1byJZg-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\moddef{Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{\relax}{NW0-1byJZg-2}\nwenddeflinemarkup
 void \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(FILE *fp, Args *args) \{\nwindexdefn{\nwixident{scanFile}}{scanFile}{NW0-1byJZg-1}
   setBisonFile(fp);
@@ -114,22 +129,28 @@ void \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(FILE *fp, Args *args) \{\nwindexdef
     freeTree(m);
   \}
 \}
+
 \nwalsodefined{\\{NW0-1byJZg-2}\\{NW0-1byJZg-3}\\{NW0-1byJZg-4}}\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{scanFile}}{scanFile}}}\nwidentuses{\\{{\nwixident{midRoot}}{midRoot}}}\nwindexuse{\nwixident{midRoot}}{midRoot}{NW0-1byJZg-1}\nwendcode{}\nwbegindocs{17}\nwdocspar
 The functions \texttt{setBisonFile}, \texttt{parseTree},
 \texttt{printNewick}, and \texttt{freeTree} are part of the
 \texttt{tree} library distributed with this package.
+
 \nwenddocs{}\nwbegincode{18}\sublabel{NW0-3ji0t0-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3ji0t0-2}}}\moddef{Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-3ji0t0-1}{NW0-3ji0t0-3}\nwenddeflinemarkup
 #include "tree.h"
+
 \nwused{\\{NW0-5D8f4-1}}\nwendcode{}\nwbegindocs{19}\nwdocspar
 The function \texttt{midRoot} is declared.
+
 \nwenddocs{}\nwbegincode{20}\sublabel{NW0-Xqfpb-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Xqfpb-2}}}\moddef{Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-Xqfpb-1}{NW0-Xqfpb-3}\nwenddeflinemarkup
 Node *\nwlinkedidentc{midRoot}{NW0-Xqfpb-2}(Node *r);\nwindexdefn{\nwixident{midRoot}}{midRoot}{NW0-Xqfpb-2}
+
 \nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{midRoot}}{midRoot}}}\nwendcode{}\nwbegindocs{21}\nwdocspar
 It first searches for the pair of leaves with the largest
 distance. The new root is inserted midpoint between these leaves, and
 then the tree is rearranged accordingly. At the end of the program we
 free any memory allocated along the way is freed and the new root
 returned.
+
 \nwenddocs{}\nwbegincode{22}\sublabel{NW0-1byJZg-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1byJZg-2}}}\moddef{Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-1byJZg-1}{NW0-1byJZg-3}\nwenddeflinemarkup
 Node *\nwlinkedidentc{midRoot}{NW0-Xqfpb-2}(Node *r) \{\nwindexdefn{\nwixident{midRoot}}{midRoot}{NW0-1byJZg-2}
   \LA{}Find max. pair~{\nwtagstyle{}\subpageref{NW0-2LcRFk-1}}\RA{}
@@ -138,6 +159,7 @@ Node *\nwlinkedidentc{midRoot}{NW0-Xqfpb-2}(Node *r) \{\nwindexdefn{\nwixident{m
   \LA{}Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}\RA{}
   return r;
 \}
+
 \nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{midRoot}}{midRoot}}}\nwendcode{}\nwbegindocs{23}\nwdocspar
 To find the pair of leaves furthest apart, $(\ell_i,\ell_j)$, for each
 pair of leaves the distance to their lowes common ancestor,

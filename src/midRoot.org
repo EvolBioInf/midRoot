@@ -18,7 +18,7 @@
   broken into a branch leading from the root to $t_1$ and a shorter branch
   leading from the root to the rest of the tree.
 
-  \begin{figure}
+  \begin{figure}[ht]
     \begin{center}
       \begin{tabular}{ccc}
 	\textbf{A} & \textcolor{white}{xxx}& \textbf{B}\\
@@ -35,16 +35,19 @@
   statements, followed by function declarations, their implementations,
   and finally the main function.
 #+end_src
+
 #+begin_src C <<midRoot.c>>=
   // <<Include headers>>
   // <<Function declarations>>
   // <<Functions>>
   // <<Main function>>
 #+end_src
+
 #+begin_src latex
 The \texttt{main} function is implemented first, as it
 determines the rest.
 #+end_src
+
 #+begin_src C <<Main function>>=
   int main(int argc, char **argv) {
     Args *args = getArgs(argc, argv);
@@ -56,6 +59,7 @@ determines the rest.
     return 0;
   }
 #+end_src
+
 #+begin_src latex
 The functions \texttt{getArgs} and \texttt{freeArgs} are declared in
 \texttt{interface.h}, and the functions \texttt{setProgName} and
@@ -63,34 +67,41 @@ The functions \texttt{getArgs} and \texttt{freeArgs} are declared in
 their implementations are part of this package. The function
 \texttt{free} is part of the standard library.
 #+end_src
+
 #+begin_src C <<Include headers>>= 
   #include "interface.h"
   #include "eprintf.h"
   #include <stdlib.h>
 #+end_src
+
 #+begin_src latex
   The user might have requested the
   program version, in which case a---rather modest---splash screen is
   printed.
 #+end_src
+
 #+begin_src C <<Deal with user interface>>=
   if (args->v)
     printSplash(args);
 #+end_src
+
 #+begin_src latex
 Alternatively, the user might request help, or an error has
 occurred. In both cases a usage message is printed. Printing
 usage or splash is declared in \texttt{interface.h}, which is already included.
 #+end_src
+
 #+begin_src C <<Deal with user interface>>=
   if (args->h || args->err)
     printUsage();
 #+end_src
+
 #+begin_src latex 
   Input is dealt with in the standard UNIX manner: If the user lists no
   files, \texttt{stdin} is the input stream; otherwise, each file in
   turn becomes the input stream.
 #+end_src
+
 #+begin_src C <<Deal with input files>>= 
   if (args->nf == 0) {
     FILE *fp = stdin;
@@ -103,12 +114,15 @@ usage or splash is declared in \texttt{interface.h}, which is already included.
     }
   }
 #+end_src
+
 #+begin_src latex
   The function \texttt{scanFile} is declared.
 #+end_src
+
 #+begin_src C <<Function declarations>>=
   void scanFile(FILE *fp, Args *args);
 #+end_src
+
 #+begin_src latex
   It retrieves each tree from a given file, roots it, and then prints it
   in the Newick format favored by biologists. Joe Felsenstein, who is
@@ -119,6 +133,7 @@ usage or splash is declared in \texttt{interface.h}, which is already included.
   \end{verbatim}
   \normalsize
 #+end_src
+
 #+begin_src C <<Functions>>=
   void scanFile(FILE *fp, Args *args) {
     setBisonFile(fp);
@@ -130,20 +145,25 @@ usage or splash is declared in \texttt{interface.h}, which is already included.
     }
   }
 #+end_src
+
 #+begin_src latex
   The functions \texttt{setBisonFile}, \texttt{parseTree},
   \texttt{printNewick}, and \texttt{freeTree} are part of the
   \texttt{tree} library distributed with this package.
 #+end_src
+
 #+begin_src C <<Include headers>>=
   #include "tree.h"
 #+end_src
+
 #+begin_src latex
   The function \texttt{midRoot} is declared.
 #+end_src
+
 #+begin_src C <<Function declarations>>=
   Node *midRoot(Node *r);
 #+end_src
+
 #+begin_src latex 
   It first searches for the pair of leaves with the largest
   distance. The new root is inserted midpoint between these leaves, and
@@ -151,6 +171,7 @@ usage or splash is declared in \texttt{interface.h}, which is already included.
   free any memory allocated along the way is freed and the new root
   returned.
 #+end_src
+
 #+begin_src C <<Functions>>=
   Node *midRoot(Node *r) {
     // <<Find max. pair>>
@@ -160,6 +181,7 @@ usage or splash is declared in \texttt{interface.h}, which is already included.
     return r;
   }
 #+end_src
+
 #+begin_src latex 
   To find the pair of leaves furthest apart, $(\ell_i,\ell_j)$, for each
   pair of leaves the distance to their lowes common ancestor,
