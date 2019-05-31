@@ -104,7 +104,7 @@ name: /* empty */			{$$ = "";}
 					  $$ = $1; 
 					}
     | NUMBER                            {
-                                          output = (char *)malloc(12*sizeof(char));
+                                          output = (char *)malloc(14*sizeof(char));
                                           sprintf(output,"%g",$1);
                                           $$ = output;
                                         }
