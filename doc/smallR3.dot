@@ -1,0 +1,13 @@
+digraph DG {
+  edge [arrowhead = none]
+  N11 -> T1
+  N11 -> N4
+  N4 -> N6
+  N4 -> N2
+  N2 -> T4
+  N2 -> N9
+  N9 -> T2
+  N9 -> T6
+  N6 -> T3
+  N6 -> T5
+}

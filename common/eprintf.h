@@ -15,7 +15,7 @@ extern void eprintf(char *, ...);
 extern char *estrdup (char *);
 extern void *emalloc(size_t);
 extern void *erealloc(void *, size_t);
-extern char *progname(void);
-extern void setprogname2(char *);
+extern char *getProgName(void);
+extern void setProgName(char *);
 
 #endif

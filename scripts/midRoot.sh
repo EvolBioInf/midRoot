@@ -1,5 +1,5 @@
-./midRoot > tmp.out
-DIFF=$(diff tmp.out ../data/midRoot.out)
+./midRoot ../data/smallU.nwk > tmp.out
+DIFF=$(diff tmp.out ../data/smallR.nwk)
 if [ "$DIFF" == "" ] 
 then
     printf "Test(midRoot)\tpass\n"

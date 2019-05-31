@@ -1,0 +1,371 @@
+\nwfilename{}\nwbegindocs{0}\nwenddocs{}\nwbegindocs{1}\nwdocspar% ===> this file was generated automatically by noweave --- better not edit it
+\section{Introduction}
+A phylogeny summarizes the evolutionary relationships between a sample
+of organisms. For example, the imaginary phylogeny in
+Figure~\ref{fig:phy}A the genealogy of six organisms, also called
+\emph{taxa}. The branches have lengths proportional to a measure of
+evolutionary change, often the number of mutations per site. The
+phylogeny is drawn in radial layout to emphasize that it has no
+root. In other words, the most recent common ancestor of the taxa is
+unknown. This is a standard result of many algorithms for
+reconstructing phylogenies, for example the neighbor joining
+algorithm~\cite{sai87:nei}. Still, in reality there was a common
+ancestor. A popular method for placing it on the tree is called
+midpoint rooting, where the root is located midpoint between the most
+distant taxa. In the example phylogeny Figure~\ref{fig:phy}A, the most distant pair of taxa
+is $t_1$/$t_4$. Rooting the phylogeny midpoint between them
+returns Figure~\ref{fig:phy}B, where the branch leading to $t_1$ was
+broken into a branch leading from the root to $t_1$ and a shorter branch
+leading from the root to the rest of the tree.
+
+\begin{figure}
+  \begin{center}
+    \begin{tabular}{ccc}
+        \textbf{A} & \textcolor{white}{xxx}& \textbf{B}\\
+        \input{smallU} & & \input{smallR}
+    \end{tabular}
+  \end{center}
+  \caption{An example phylogeny unrooted (\textbf{A}) and rooted
+    midpoint between $t_1$ and $t_4$ shown in bold (\textbf{B}).}\label{fig:phy}
+\end{figure}
+
+\section{Implementation}
+The program \texttt{midRoot} reads one or more trees and prints their
+midpoint rooted versions. Like many C programs, it starts with include
+statements, followed by function declarations, their implementations,
+and finally the main function.
+\nwenddocs{}\nwbegincode{2}\sublabel{NW0-5D8f4-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-5D8f4-1}}}\moddef{midRoot.c~{\nwtagstyle{}\subpageref{NW0-5D8f4-1}}}\endmoddef\nwstartdeflinemarkup\nwenddeflinemarkup
+\LA{}Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}\RA{}
+\LA{}Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}\RA{}
+\LA{}Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}\RA{}
+\LA{}Main function~{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}\RA{}
+\nwnotused{midRoot.c}\nwendcode{}\nwbegindocs{3}\nwdocspar
+The \texttt{main} function is implemented first, as it
+determines the rest.
+\nwenddocs{}\nwbegincode{4}\sublabel{NW0-32ejEQ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}}\moddef{Main function~{\nwtagstyle{}\subpageref{NW0-32ejEQ-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwenddeflinemarkup
+int \nwlinkedidentc{main}{NW0-32ejEQ-1}(int argc, char **argv) \{\nwindexdefn{\nwixident{main}}{main}{NW0-32ejEQ-1}
+  Args *args = getArgs(argc, argv);
+  setProgName(argv[0]);
+  \LA{}Deal with user interface~{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}\RA{}
+  \LA{}Deal with input files~{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}\RA{}
+  freeArgs(args);
+  free(getProgName());
+  return 0;
+\}
+\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{main}}{main}}}\nwendcode{}\nwbegindocs{5}\nwdocspar
+The functions \texttt{getArgs} and \texttt{freeArgs} are declared in
+\texttt{interface.h}, and the functions \texttt{setProgName} and
+\texttt{getProgName} in \texttt{eprintf.h}. Both of these headers and
+their implementations are part of this package. The function
+\texttt{free} is part of the standard library.
+\nwenddocs{}\nwbegincode{6}\sublabel{NW0-3ji0t0-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\moddef{Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{\relax}{NW0-3ji0t0-2}\nwenddeflinemarkup
+#include "interface.h"
+#include "eprintf.h"
+#include <stdlib.h>
+\nwalsodefined{\\{NW0-3ji0t0-2}\\{NW0-3ji0t0-3}}\nwused{\\{NW0-5D8f4-1}}\nwendcode{}\nwbegindocs{7}\nwdocspar
+The user might have requested the
+program version, in which case a---rather modest---splash screen is
+printed.
+\nwenddocs{}\nwbegincode{8}\sublabel{NW0-3hJosa-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}}\moddef{Deal with user interface~{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwprevnextdefs{\relax}{NW0-3hJosa-2}\nwenddeflinemarkup
+if (args->v)
+  printSplash(args);
+\nwalsodefined{\\{NW0-3hJosa-2}}\nwused{\\{NW0-32ejEQ-1}}\nwendcode{}\nwbegindocs{9}\nwdocspar
+Alternatively, the user might request help, or an error has
+occurred. In both cases a usage message is printed. Printing
+usage or splash is declared in \texttt{interface.h}, which is already included.
+\nwenddocs{}\nwbegincode{10}\sublabel{NW0-3hJosa-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3hJosa-2}}}\moddef{Deal with user interface~{\nwtagstyle{}\subpageref{NW0-3hJosa-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwprevnextdefs{NW0-3hJosa-1}{\relax}\nwenddeflinemarkup
+if (args->h || args->err)
+  printUsage();
+\nwused{\\{NW0-32ejEQ-1}}\nwendcode{}\nwbegindocs{11}\nwdocspar
+Input is dealt with in the standard UNIX manner: If the user lists no
+files, \texttt{stdin} is the input stream; otherwise, each file in
+turn becomes the input stream.
+\nwenddocs{}\nwbegincode{12}\sublabel{NW0-4EgRTZ-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}}\moddef{Deal with input files~{\nwtagstyle{}\subpageref{NW0-4EgRTZ-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-32ejEQ-1}}\nwenddeflinemarkup
+if (args->nf == 0) \{
+  FILE *fp = stdin;
+  \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(fp, args);
+\} else \{
+  for (int i = 0; i < args->nf; i++) \{
+    FILE *fp = efopen(args->fi[i], "r");
+    \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(fp, args);
+    fclose(fp);
+  \}
+\}
+\nwused{\\{NW0-32ejEQ-1}}\nwidentuses{\\{{\nwixident{scanFile}}{scanFile}}}\nwindexuse{\nwixident{scanFile}}{scanFile}{NW0-4EgRTZ-1}\nwendcode{}\nwbegindocs{13}\nwdocspar
+The function \texttt{scanFile} is declared.
+\nwenddocs{}\nwbegincode{14}\sublabel{NW0-Xqfpb-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\moddef{Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{\relax}{NW0-Xqfpb-2}\nwenddeflinemarkup
+void \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(FILE *fp, Args *args);
+\nwalsodefined{\\{NW0-Xqfpb-2}\\{NW0-Xqfpb-3}\\{NW0-Xqfpb-4}}\nwused{\\{NW0-5D8f4-1}}\nwidentuses{\\{{\nwixident{scanFile}}{scanFile}}}\nwindexuse{\nwixident{scanFile}}{scanFile}{NW0-Xqfpb-1}\nwendcode{}\nwbegindocs{15}\nwdocspar
+It retrieves each tree from a given file, roots it, and then prints it
+in the Newick format favored by biologists. Joe Felsenstein, who is
+one of its inventors, describes it on his web site:
+\small
+\begin{verbatim}
+http://evolution.genetics.washington.edu/phylip/newicktree.html
+\end{verbatim}
+\normalsize
+\nwenddocs{}\nwbegincode{16}\sublabel{NW0-1byJZg-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\moddef{Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{\relax}{NW0-1byJZg-2}\nwenddeflinemarkup
+void \nwlinkedidentc{scanFile}{NW0-1byJZg-1}(FILE *fp, Args *args) \{\nwindexdefn{\nwixident{scanFile}}{scanFile}{NW0-1byJZg-1}
+  setBisonFile(fp);
+  Node *r, *m;
+  while ((r = parseTree()) != NULL) \{
+    m = \nwlinkedidentc{midRoot}{NW0-Xqfpb-2}(r);
+    printNewick(m);
+    freeTree(m);
+  \}
+\}
+\nwalsodefined{\\{NW0-1byJZg-2}\\{NW0-1byJZg-3}\\{NW0-1byJZg-4}}\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{scanFile}}{scanFile}}}\nwidentuses{\\{{\nwixident{midRoot}}{midRoot}}}\nwindexuse{\nwixident{midRoot}}{midRoot}{NW0-1byJZg-1}\nwendcode{}\nwbegindocs{17}\nwdocspar
+The functions \texttt{setBisonFile}, \texttt{parseTree},
+\texttt{printNewick}, and \texttt{freeTree} are part of the
+\texttt{tree} library distributed with this package.
+\nwenddocs{}\nwbegincode{18}\sublabel{NW0-3ji0t0-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3ji0t0-2}}}\moddef{Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-3ji0t0-1}{NW0-3ji0t0-3}\nwenddeflinemarkup
+#include "tree.h"
+\nwused{\\{NW0-5D8f4-1}}\nwendcode{}\nwbegindocs{19}\nwdocspar
+The function \texttt{midRoot} is declared.
+\nwenddocs{}\nwbegincode{20}\sublabel{NW0-Xqfpb-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Xqfpb-2}}}\moddef{Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-Xqfpb-1}{NW0-Xqfpb-3}\nwenddeflinemarkup
+Node *\nwlinkedidentc{midRoot}{NW0-Xqfpb-2}(Node *r);\nwindexdefn{\nwixident{midRoot}}{midRoot}{NW0-Xqfpb-2}
+\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{midRoot}}{midRoot}}}\nwendcode{}\nwbegindocs{21}\nwdocspar
+It first searches for the pair of leaves with the largest
+distance. The new root is inserted midpoint between these leaves, and
+then the tree is rearranged accordingly. At the end of the program we
+free any memory allocated along the way is freed and the new root
+returned.
+\nwenddocs{}\nwbegincode{22}\sublabel{NW0-1byJZg-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1byJZg-2}}}\moddef{Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-1byJZg-1}{NW0-1byJZg-3}\nwenddeflinemarkup
+Node *\nwlinkedidentc{midRoot}{NW0-Xqfpb-2}(Node *r) \{\nwindexdefn{\nwixident{midRoot}}{midRoot}{NW0-1byJZg-2}
+  \LA{}Find max. pair~{\nwtagstyle{}\subpageref{NW0-2LcRFk-1}}\RA{}
+  \LA{}Insert new root~{\nwtagstyle{}\subpageref{NW0-13oY2G-1}}\RA{}
+  \LA{}Rearrange tree~{\nwtagstyle{}\subpageref{NW0-3PQBB5-1}}\RA{}
+  \LA{}Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}\RA{}
+  return r;
+\}
+\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{midRoot}}{midRoot}}}\nwendcode{}\nwbegindocs{23}\nwdocspar
+To find the pair of leaves furthest apart, $(\ell_i,\ell_j)$, for each
+pair of leaves the distance to their lowes common ancestor,
+$\mathrm{lca}$, is computed. These values reveal the leaves furthest
+apart on the tree.
+\nwenddocs{}\nwbegincode{24}\sublabel{NW0-2LcRFk-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-2LcRFk-1}}}\moddef{Find max. pair~{\nwtagstyle{}\subpageref{NW0-2LcRFk-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-1byJZg-2}}\nwenddeflinemarkup
+int \nwlinkedidentc{n}{NW0-2LcRFk-1} = 0;\nwindexdefn{\nwixident{n}}{n}{NW0-2LcRFk-1}
+Node **\nwlinkedidentc{leaves}{NW0-2LcRFk-1} = NULL;\nwindexdefn{\nwixident{leaves}}{leaves}{NW0-2LcRFk-1}
+\nwlinkedidentc{leaves}{NW0-2LcRFk-1} = \nwlinkedidentc{getLeaves}{NW0-Xqfpb-3}(r, \nwlinkedidentc{leaves}{NW0-2LcRFk-1}, &\nwlinkedidentc{n}{NW0-2LcRFk-1});
+\LA{}Compute $d(\ell_i,\mathrm{lca})$~{\nwtagstyle{}\subpageref{NW0-3wCMIx-1}}\RA{}
+\LA{}Look for maximum distance~{\nwtagstyle{}\subpageref{NW0-1NLudF-1}}\RA{}
+\nwused{\\{NW0-1byJZg-2}}\nwidentdefs{\\{{\nwixident{leaves}}{leaves}}\\{{\nwixident{n}}{n}}}\nwidentuses{\\{{\nwixident{getLeaves}}{getLeaves}}}\nwindexuse{\nwixident{getLeaves}}{getLeaves}{NW0-2LcRFk-1}\nwendcode{}\nwbegindocs{25}\nwdocspar
+The leaves are freed at the end of the run.
+\nwenddocs{}\nwbegincode{26}\sublabel{NW0-Dn4oa-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}}\moddef{Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-1byJZg-2}}\nwprevnextdefs{\relax}{NW0-Dn4oa-2}\nwenddeflinemarkup
+free(\nwlinkedidentc{leaves}{NW0-2LcRFk-1});
+\nwalsodefined{\\{NW0-Dn4oa-2}}\nwused{\\{NW0-1byJZg-2}}\nwidentuses{\\{{\nwixident{leaves}}{leaves}}}\nwindexuse{\nwixident{leaves}}{leaves}{NW0-Dn4oa-1}\nwendcode{}\nwbegindocs{27}\nwdocspar
+The function \texttt{getLeaves} is declared
+\nwenddocs{}\nwbegincode{28}\sublabel{NW0-Xqfpb-3}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Xqfpb-3}}}\moddef{Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-Xqfpb-2}{NW0-Xqfpb-4}\nwenddeflinemarkup
+Node **\nwlinkedidentc{getLeaves}{NW0-Xqfpb-3}(Node *r, Node **\nwlinkedidentc{leaves}{NW0-2LcRFk-1}, int *\nwlinkedidentc{n}{NW0-2LcRFk-1});\nwindexdefn{\nwixident{getLeaves}}{getLeaves}{NW0-Xqfpb-3}
+\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{getLeaves}}{getLeaves}}}\nwidentuses{\\{{\nwixident{leaves}}{leaves}}\\{{\nwixident{n}}{n}}}\nwindexuse{\nwixident{leaves}}{leaves}{NW0-Xqfpb-3}\nwindexuse{\nwixident{n}}{n}{NW0-Xqfpb-3}\nwendcode{}\nwbegindocs{29}\nwdocspar
+and implemented by direct recursion.
+\nwenddocs{}\nwbegincode{30}\sublabel{NW0-1byJZg-3}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1byJZg-3}}}\moddef{Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-1byJZg-2}{NW0-1byJZg-4}\nwenddeflinemarkup
+Node **\nwlinkedidentc{getLeaves}{NW0-Xqfpb-3}(Node *r, Node **\nwlinkedidentc{leaves}{NW0-2LcRFk-1}, int *\nwlinkedidentc{n}{NW0-2LcRFk-1}) \{\nwindexdefn{\nwixident{getLeaves}}{getLeaves}{NW0-1byJZg-3}
+  if (r != NULL) \{
+    \nwlinkedidentc{leaves}{NW0-2LcRFk-1} = \nwlinkedidentc{getLeaves}{NW0-Xqfpb-3}(r->left, \nwlinkedidentc{leaves}{NW0-2LcRFk-1}, \nwlinkedidentc{n}{NW0-2LcRFk-1});
+    \nwlinkedidentc{leaves}{NW0-2LcRFk-1} = \nwlinkedidentc{getLeaves}{NW0-Xqfpb-3}(r->right, \nwlinkedidentc{leaves}{NW0-2LcRFk-1}, \nwlinkedidentc{n}{NW0-2LcRFk-1});
+    if (r->left == NULL) \{
+        *\nwlinkedidentc{n}{NW0-2LcRFk-1} = *\nwlinkedidentc{n}{NW0-2LcRFk-1} + 1;
+        \nwlinkedidentc{leaves}{NW0-2LcRFk-1} = (Node **)erealloc(\nwlinkedidentc{leaves}{NW0-2LcRFk-1}, *\nwlinkedidentc{n}{NW0-2LcRFk-1} * sizeof(Node *));
+        \nwlinkedidentc{leaves}{NW0-2LcRFk-1}[*\nwlinkedidentc{n}{NW0-2LcRFk-1} - 1] = r;
+    \}
+  \}
+  return \nwlinkedidentc{leaves}{NW0-2LcRFk-1};
+\}
+\nwused{\\{NW0-5D8f4-1}}\nwidentdefs{\\{{\nwixident{getLeaves}}{getLeaves}}}\nwidentuses{\\{{\nwixident{leaves}}{leaves}}\\{{\nwixident{n}}{n}}}\nwindexuse{\nwixident{leaves}}{leaves}{NW0-1byJZg-3}\nwindexuse{\nwixident{n}}{n}{NW0-1byJZg-3}\nwendcode{}\nwbegindocs{31}\nwdocspar
+Having obtained the leaves, their distances to the lowes common
+ancestor (\emph{lca}) are computed for all pairs.
+\nwenddocs{}\nwbegincode{32}\sublabel{NW0-3wCMIx-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3wCMIx-1}}}\moddef{Compute $d(\ell_i,\mathrm{lca})$~{\nwtagstyle{}\subpageref{NW0-3wCMIx-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-2LcRFk-1}}\nwenddeflinemarkup
+double **\nwlinkedidentc{dlca}{NW0-3wCMIx-1} = (double **)emalloc(\nwlinkedidentc{n}{NW0-2LcRFk-1} * sizeof(double *));\nwindexdefn{\nwixident{dlca}}{dlca}{NW0-3wCMIx-1}
+for (int i = 0; i < \nwlinkedidentc{n}{NW0-2LcRFk-1}; i++)
+  \nwlinkedidentc{dlca}{NW0-3wCMIx-1}[i] = (double *)emalloc(\nwlinkedidentc{n}{NW0-2LcRFk-1} * sizeof(double));
+for (int i = 0; i < \nwlinkedidentc{n}{NW0-2LcRFk-1} - 1; i++)
+  for (int j = i; j < \nwlinkedidentc{n}{NW0-2LcRFk-1}; j++) \{
+    Node *la = lca(\nwlinkedidentc{leaves}{NW0-2LcRFk-1}[i], \nwlinkedidentc{leaves}{NW0-2LcRFk-1}[j]);
+    \nwlinkedidentc{dlca}{NW0-3wCMIx-1}[i][j] = ancDist(\nwlinkedidentc{leaves}{NW0-2LcRFk-1}[i], la);
+    \nwlinkedidentc{dlca}{NW0-3wCMIx-1}[j][i] = ancDist(\nwlinkedidentc{leaves}{NW0-2LcRFk-1}[j], la);
+  \}
+\nwused{\\{NW0-2LcRFk-1}}\nwidentdefs{\\{{\nwixident{dlca}}{dlca}}}\nwidentuses{\\{{\nwixident{leaves}}{leaves}}\\{{\nwixident{n}}{n}}}\nwindexuse{\nwixident{leaves}}{leaves}{NW0-3wCMIx-1}\nwindexuse{\nwixident{n}}{n}{NW0-3wCMIx-1}\nwendcode{}\nwbegindocs{33}\nwdocspar
+The memory for $d(\ell_i, \mathrm{lca})$ is freed at the end.
+\nwenddocs{}\nwbegincode{34}\sublabel{NW0-Dn4oa-2}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Dn4oa-2}}}\moddef{Free memory~{\nwtagstyle{}\subpageref{NW0-Dn4oa-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-1byJZg-2}}\nwprevnextdefs{NW0-Dn4oa-1}{\relax}\nwenddeflinemarkup
+for (int i = 0; i < \nwlinkedidentc{n}{NW0-2LcRFk-1}; i++)
+  free(\nwlinkedidentc{dlca}{NW0-3wCMIx-1}[i]);
+free(\nwlinkedidentc{dlca}{NW0-3wCMIx-1});
+\nwused{\\{NW0-1byJZg-2}}\nwidentuses{\\{{\nwixident{dlca}}{dlca}}\\{{\nwixident{n}}{n}}}\nwindexuse{\nwixident{dlca}}{dlca}{NW0-Dn4oa-2}\nwindexuse{\nwixident{n}}{n}{NW0-Dn4oa-2}\nwendcode{}\nwbegindocs{35}\nwdocspar
+Now everything is ready for finding the pair of leaves,
+$(\ell_i,\ell_j)$, with the maximum distance, $d_{\rm m}$.
+\nwenddocs{}\nwbegincode{36}\sublabel{NW0-1NLudF-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1NLudF-1}}}\moddef{Look for maximum distance~{\nwtagstyle{}\subpageref{NW0-1NLudF-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-2LcRFk-1}}\nwenddeflinemarkup
+double \nwlinkedidentc{d}{NW0-1NLudF-1}, \nwlinkedidentc{dm}{NW0-1NLudF-1} = 0;\nwindexdefn{\nwixident{d}}{d}{NW0-1NLudF-1}\nwindexdefn{\nwixident{dm}}{dm}{NW0-1NLudF-1}
+int \nwlinkedidentc{im}{NW0-1NLudF-1} = 0, jm = 0;\nwindexdefn{\nwixident{im}}{im}{NW0-1NLudF-1}
+for (int i = 0; i < \nwlinkedidentc{n}{NW0-2LcRFk-1} - 1; i++) \{
+  for (int j = i + 1; j < \nwlinkedidentc{n}{NW0-2LcRFk-1}; j++) \{
+    \nwlinkedidentc{d}{NW0-1NLudF-1} = \nwlinkedidentc{dlca}{NW0-3wCMIx-1}[i][j] + \nwlinkedidentc{dlca}{NW0-3wCMIx-1}[j][i];
+    if (\nwlinkedidentc{d}{NW0-1NLudF-1} > \nwlinkedidentc{dm}{NW0-1NLudF-1}) \{
+        \nwlinkedidentc{dm}{NW0-1NLudF-1} = \nwlinkedidentc{d}{NW0-1NLudF-1};
+        \nwlinkedidentc{im}{NW0-1NLudF-1} = i;
+        jm = j;
+    \}
+  \}
+\}
+
+\nwused{\\{NW0-2LcRFk-1}}\nwidentdefs{\\{{\nwixident{d}}{d}}\\{{\nwixident{dm}}{dm}}\\{{\nwixident{im}}{im}}}\nwidentuses{\\{{\nwixident{dlca}}{dlca}}\\{{\nwixident{n}}{n}}}\nwindexuse{\nwixident{dlca}}{dlca}{NW0-1NLudF-1}\nwindexuse{\nwixident{n}}{n}{NW0-1NLudF-1}\nwendcode{}\nwbegindocs{37}\nwdocspar
+To insert the new root in the middle between $\ell_i$ and $\ell_j$,
+the relevant edge is located and split. Figure~\ref{fig:ur}A shows a
+version of Figure~\ref{fig:phy}A where the branch lengths have been
+abstracted and the internal nodes are labeled. Internally, such
+``unrooted trees'' are in fact rooted, which is made explicit in
+Figure~\ref{fig:ur}B. To re-root along the edge $(t_1,n_2)$, it is
+located and a new node, $n_5$, added (Figure~\ref{fig:ur}C).
+\nwenddocs{}\nwbegincode{38}\sublabel{NW0-13oY2G-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-13oY2G-1}}}\moddef{Insert new root~{\nwtagstyle{}\subpageref{NW0-13oY2G-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-1byJZg-2}}\nwenddeflinemarkup
+\LA{}Find edge to split~{\nwtagstyle{}\subpageref{NW0-44Su8C-1}}\RA{}
+\LA{}Add new node~{\nwtagstyle{}\subpageref{NW0-1nnmsk-1}}\RA{}
+\nwused{\\{NW0-1byJZg-2}}\nwendcode{}\nwbegindocs{39}\nwdocspar
+To find the edge to split, a climb towards the root is started from
+either $\ell_i$ or $\ell_j$, whichever has the greater distance to the
+lowest common ancestor. The climb continues until the sum of edge
+lengths exceeds $d_{\rm m} / 2$.
+\nwenddocs{}\nwbegincode{40}\sublabel{NW0-44Su8C-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-44Su8C-1}}}\moddef{Find edge to split~{\nwtagstyle{}\subpageref{NW0-44Su8C-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-13oY2G-1}}\nwenddeflinemarkup
+Node *\nwlinkedidentc{c}{NW0-44Su8C-1}, *\nwlinkedidentc{p}{NW0-44Su8C-1};  /* child, parent */\nwindexdefn{\nwixident{c}}{c}{NW0-44Su8C-1}\nwindexdefn{\nwixident{p}}{p}{NW0-44Su8C-1}
+double \nwlinkedidentc{dh}{NW0-44Su8C-1} = \nwlinkedidentc{dm}{NW0-1NLudF-1} / 2.;\nwindexdefn{\nwixident{dh}}{dh}{NW0-44Su8C-1}
+if (\nwlinkedidentc{dlca}{NW0-3wCMIx-1}[\nwlinkedidentc{im}{NW0-1NLudF-1}][jm] > \nwlinkedidentc{dh}{NW0-44Su8C-1})
+  \nwlinkedidentc{c}{NW0-44Su8C-1} = \nwlinkedidentc{leaves}{NW0-2LcRFk-1}[\nwlinkedidentc{im}{NW0-1NLudF-1}];
+else
+  \nwlinkedidentc{c}{NW0-44Su8C-1} = \nwlinkedidentc{leaves}{NW0-2LcRFk-1}[jm];
+double \nwlinkedidentc{s}{NW0-44Su8C-1} = \nwlinkedidentc{c}{NW0-44Su8C-1}->dist;\nwindexdefn{\nwixident{s}}{s}{NW0-44Su8C-1}
+while(\nwlinkedidentc{c}{NW0-44Su8C-1}->parent && \nwlinkedidentc{s}{NW0-44Su8C-1} < \nwlinkedidentc{dh}{NW0-44Su8C-1}) \{
+  \nwlinkedidentc{c}{NW0-44Su8C-1} = \nwlinkedidentc{c}{NW0-44Su8C-1}->parent;
+  \nwlinkedidentc{s}{NW0-44Su8C-1} += \nwlinkedidentc{c}{NW0-44Su8C-1}->dist;
+\}
+\nwlinkedidentc{p}{NW0-44Su8C-1} = \nwlinkedidentc{c}{NW0-44Su8C-1}->parent;
+\nwused{\\{NW0-13oY2G-1}}\nwidentdefs{\\{{\nwixident{c}}{c}}\\{{\nwixident{dh}}{dh}}\\{{\nwixident{p}}{p}}\\{{\nwixident{s}}{s}}}\nwidentuses{\\{{\nwixident{dlca}}{dlca}}\\{{\nwixident{dm}}{dm}}\\{{\nwixident{im}}{im}}\\{{\nwixident{leaves}}{leaves}}}\nwindexuse{\nwixident{dlca}}{dlca}{NW0-44Su8C-1}\nwindexuse{\nwixident{dm}}{dm}{NW0-44Su8C-1}\nwindexuse{\nwixident{im}}{im}{NW0-44Su8C-1}\nwindexuse{\nwixident{leaves}}{leaves}{NW0-44Su8C-1}\nwendcode{}\nwbegindocs{41}\nwdocspar
+Now the new root node, $n_5$, is created, the edge $(t_1, n_2)$ is
+split, and $n_5$ spliced in (Figure~\ref{fig:ur}C). The splicing is
+done in three steps: First, $n_5$ is added to the children of $n_2$,
+then $t_1$ is removed from the children of $n_2$, and $t_1$ added to
+the children of $n_5$. Finally, the distances to and from $n_5$ are
+adjusted.
+\nwenddocs{}\nwbegincode{42}\sublabel{NW0-1nnmsk-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1nnmsk-1}}}\moddef{Add new node~{\nwtagstyle{}\subpageref{NW0-1nnmsk-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-13oY2G-1}}\nwenddeflinemarkup
+Node *\nwlinkedidentc{R}{NW0-1nnmsk-1} = newNode(); /* new root */\nwindexdefn{\nwixident{R}}{R}{NW0-1nnmsk-1}
+addChild(\nwlinkedidentc{p}{NW0-44Su8C-1}, \nwlinkedidentc{R}{NW0-1nnmsk-1});
+rmChild(\nwlinkedidentc{p}{NW0-44Su8C-1}, \nwlinkedidentc{c}{NW0-44Su8C-1});
+addChild(\nwlinkedidentc{R}{NW0-1nnmsk-1}, \nwlinkedidentc{c}{NW0-44Su8C-1});
+\LA{}Adjust distances~{\nwtagstyle{}\subpageref{NW0-24elOi-1}}\RA{}
+\nwused{\\{NW0-13oY2G-1}}\nwidentdefs{\\{{\nwixident{R}}{R}}}\nwidentuses{\\{{\nwixident{c}}{c}}\\{{\nwixident{p}}{p}}}\nwindexuse{\nwixident{c}}{c}{NW0-1nnmsk-1}\nwindexuse{\nwixident{p}}{p}{NW0-1nnmsk-1}\nwendcode{}\nwbegindocs{43}\nwdocspar
+The functions \texttt{addNode} and \texttt{rmChild} are already part
+of the \texttt{tree} library.  As to the distances, let $s$ be the
+length of the path $(t_1,n_2)$, and call the desired lengths
+$x_1=d(t_1,n_5)$ and $x_2=d(n_5,n_2)$. Then $x_2 = s - d_{\rm m} /2$
+and $x_1 = d(t_1,n_2) - x_2$.
+\nwenddocs{}\nwbegincode{44}\sublabel{NW0-24elOi-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-24elOi-1}}}\moddef{Adjust distances~{\nwtagstyle{}\subpageref{NW0-24elOi-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-1nnmsk-1}}\nwenddeflinemarkup
+float \nwlinkedidentc{x2}{NW0-24elOi-1} = \nwlinkedidentc{s}{NW0-44Su8C-1} - \nwlinkedidentc{dm}{NW0-1NLudF-1} / 2.;\nwindexdefn{\nwixident{x2}}{x2}{NW0-24elOi-1}
+float \nwlinkedidentc{x1}{NW0-24elOi-1} = \nwlinkedidentc{c}{NW0-44Su8C-1}->dist - \nwlinkedidentc{x2}{NW0-24elOi-1};\nwindexdefn{\nwixident{x1}}{x1}{NW0-24elOi-1}
+\nwlinkedidentc{c}{NW0-44Su8C-1}->dist = \nwlinkedidentc{x1}{NW0-24elOi-1};
+\nwlinkedidentc{R}{NW0-1nnmsk-1}->dist = \nwlinkedidentc{x2}{NW0-24elOi-1};
+\nwused{\\{NW0-1nnmsk-1}}\nwidentdefs{\\{{\nwixident{x1}}{x1}}\\{{\nwixident{x2}}{x2}}}\nwidentuses{\\{{\nwixident{c}}{c}}\\{{\nwixident{dm}}{dm}}\\{{\nwixident{R}}{R}}\\{{\nwixident{s}}{s}}}\nwindexuse{\nwixident{c}}{c}{NW0-24elOi-1}\nwindexuse{\nwixident{dm}}{dm}{NW0-24elOi-1}\nwindexuse{\nwixident{R}}{R}{NW0-24elOi-1}\nwindexuse{\nwixident{s}}{s}{NW0-24elOi-1}\nwendcode{}\nwbegindocs{45}\nwdocspar
+The last step is to rearrange the tree such that $n_5$ becomes the new
+root. Donald Knuth described the process for this as picking up the
+tree by $n_5$ in Figure~\ref{fig:ur}C, and shaking it to get
+Figure~\ref{fig:ur}D~\cite[p. 371]{knu97:ar1}. More formally, this is
+done by climbing from $n_5$ to the old root, $n_1$, and at every step
+converting the parent to a child node and adjusting the distance
+attribute accordingly. For this purpose, the new function
+\texttt{parentToChild} is applied to $n_5$, before making it the new
+root, which moves the algorithm from Figure~\ref{fig:ur}C to
+Figure~\ref{fig:ur}D.
+\begin{figure}
+\input{labels}
+  \begin{center}
+    \begin{tabular}{cc}
+          \textbf{A} & \textbf{B}\\
+          \scalebox{0.4}{\includegraphics{smallU}} & \scalebox{0.4}{\includegraphics{smallR}}\\
+          \textbf{C} & \textbf{D}\\
+          \scalebox{0.4}{\includegraphics{smallR2}} & \scalebox{0.4}{\includegraphics{smallR3}}
+        \end{tabular}
+  \end{center}
+  \caption{Rooting a tree. (\textbf{A}) is drawn in the unrooted,
+    radial layout often used in biology, even though internally it is
+    rooted on $n_1$. This rooting is made explicit in (\textbf{B}),
+    where we wish to reroot the tree on edge $(t_1,n_2)$ marked by
+    $||$.  In (\textbf{C}) the future new root $n_5$ is added to the
+    tree by splitting $(t_1,n_2)$. (\textbf{D}) is the newly rooted
+    tree. It is obtained by picking up (\textbf{C}) at $n_5$ and
+    shaking it~\cite[p. 373]{knu97:ar1}.}\label{fig:ur}
+\end{figure}
+\nwenddocs{}\nwbegincode{46}\sublabel{NW0-3PQBB5-1}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3PQBB5-1}}}\moddef{Rearrange tree~{\nwtagstyle{}\subpageref{NW0-3PQBB5-1}}}\endmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-1byJZg-2}}\nwenddeflinemarkup
+parentToChild(\nwlinkedidentc{R}{NW0-1nnmsk-1});
+r = \nwlinkedidentc{R}{NW0-1nnmsk-1};
+\nwused{\\{NW0-1byJZg-2}}\nwidentuses{\\{{\nwixident{R}}{R}}}\nwindexuse{\nwixident{R}}{R}{NW0-3PQBB5-1}\nwendcode{}\nwbegindocs{47}\nwdocspar
+The function \texttt{parentToChild} is declared
+\nwenddocs{}\nwbegincode{48}\sublabel{NW0-Xqfpb-4}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-Xqfpb-4}}}\moddef{Function declarations~{\nwtagstyle{}\subpageref{NW0-Xqfpb-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-Xqfpb-3}{\relax}\nwenddeflinemarkup
+void parentToChild(Node *\nwlinkedidentc{n}{NW0-2LcRFk-1});
+\nwused{\\{NW0-5D8f4-1}}\nwidentuses{\\{{\nwixident{n}}{n}}}\nwindexuse{\nwixident{n}}{n}{NW0-Xqfpb-4}\nwendcode{}\nwbegindocs{49}\nwdocspar
+and then implemented. 
+\nwenddocs{}\nwbegincode{50}\sublabel{NW0-1byJZg-4}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-1byJZg-4}}}\moddef{Functions~{\nwtagstyle{}\subpageref{NW0-1byJZg-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-1byJZg-3}{\relax}\nwenddeflinemarkup
+  void parentToChild(Node *\nwlinkedidentc{n}{NW0-2LcRFk-1}) \{
+    if(\nwlinkedidentc{n}{NW0-2LcRFk-1}->parent->parent != NULL)
+        parentToChild(\nwlinkedidentc{n}{NW0-2LcRFk-1}->parent);
+    Node *\nwlinkedidentc{p}{NW0-44Su8C-1} = \nwlinkedidentc{n}{NW0-2LcRFk-1}->parent;
+    rmChild(\nwlinkedidentc{p}{NW0-44Su8C-1}, \nwlinkedidentc{n}{NW0-2LcRFk-1});
+    addChild(\nwlinkedidentc{n}{NW0-2LcRFk-1}, \nwlinkedidentc{p}{NW0-44Su8C-1});
+    \nwlinkedidentc{p}{NW0-44Su8C-1}->dist = \nwlinkedidentc{n}{NW0-2LcRFk-1}->dist;
+  \}
+\nwused{\\{NW0-5D8f4-1}}\nwidentuses{\\{{\nwixident{n}}{n}}\\{{\nwixident{p}}{p}}}\nwindexuse{\nwixident{n}}{n}{NW0-1byJZg-4}\nwindexuse{\nwixident{p}}{p}{NW0-1byJZg-4}\nwendcode{}\nwbegindocs{51}\nwdocspar
+For \texttt{assert} a new header of the standard library is included.
+\nwenddocs{}\nwbegincode{52}\sublabel{NW0-3ji0t0-3}\nwmargintag{{\nwtagstyle{}\subpageref{NW0-3ji0t0-3}}}\moddef{Include headers~{\nwtagstyle{}\subpageref{NW0-3ji0t0-1}}}\plusendmoddef\nwstartdeflinemarkup\nwusesondefline{\\{NW0-5D8f4-1}}\nwprevnextdefs{NW0-3ji0t0-2}{\relax}\nwenddeflinemarkup
+#include <assert.h>
+\nwused{\\{NW0-5D8f4-1}}\nwendcode{}\nwbegindocs{53}\nwdocspar
+This was the final piece in the puzzle, midpoint rooting can now be
+applied in pipelines like
+\begin{verbatim}
+andi foo.fasta | clustDist | midRoot | new2view
+\end{verbatim}
+where
+\texttt{andi}\footnote{\texttt{https://github.com/evolbioinf/andi}}
+computes the pairwise distances between the sequences in
+\texttt{foo.fasta}~\cite{hau15:and},
+\texttt{clustDist}\footnote{\texttt{https://github.com/evolbioinf/clustDist}}
+transforms them to a neighbor joining tree, \texttt{midRoot} midpoint
+roots it, and
+\texttt{new2view}\footnote{\texttt{https://github.com/evolbioinf/new2view}}
+finally draws the tree to the screen.
+\nwenddocs{}\nwbegindocs{54}\nwdocspar
+\section{List of code chunks}
+\nowebchunks
+\section{Index}
+\nowebindex
+\nwenddocs{}
+
+\nwixlogsorted{c}{{Add new node}{NW0-1nnmsk-1}{\nwixu{NW0-13oY2G-1}\nwixd{NW0-1nnmsk-1}}}%
+\nwixlogsorted{c}{{Adjust distances}{NW0-24elOi-1}{\nwixu{NW0-1nnmsk-1}\nwixd{NW0-24elOi-1}}}%
+\nwixlogsorted{c}{{Compute $d(\ell_i,\mathrm{lca})$}{NW0-3wCMIx-1}{\nwixu{NW0-2LcRFk-1}\nwixd{NW0-3wCMIx-1}}}%
+\nwixlogsorted{c}{{Deal with input files}{NW0-4EgRTZ-1}{\nwixu{NW0-32ejEQ-1}\nwixd{NW0-4EgRTZ-1}}}%
+\nwixlogsorted{c}{{Deal with user interface}{NW0-3hJosa-1}{\nwixu{NW0-32ejEQ-1}\nwixd{NW0-3hJosa-1}\nwixd{NW0-3hJosa-2}}}%
+\nwixlogsorted{c}{{Find edge to split}{NW0-44Su8C-1}{\nwixu{NW0-13oY2G-1}\nwixd{NW0-44Su8C-1}}}%
+\nwixlogsorted{c}{{Find max. pair}{NW0-2LcRFk-1}{\nwixu{NW0-1byJZg-2}\nwixd{NW0-2LcRFk-1}}}%
+\nwixlogsorted{c}{{Free memory}{NW0-Dn4oa-1}{\nwixu{NW0-1byJZg-2}\nwixd{NW0-Dn4oa-1}\nwixd{NW0-Dn4oa-2}}}%
+\nwixlogsorted{c}{{Function declarations}{NW0-Xqfpb-1}{\nwixu{NW0-5D8f4-1}\nwixd{NW0-Xqfpb-1}\nwixd{NW0-Xqfpb-2}\nwixd{NW0-Xqfpb-3}\nwixd{NW0-Xqfpb-4}}}%
+\nwixlogsorted{c}{{Functions}{NW0-1byJZg-1}{\nwixu{NW0-5D8f4-1}\nwixd{NW0-1byJZg-1}\nwixd{NW0-1byJZg-2}\nwixd{NW0-1byJZg-3}\nwixd{NW0-1byJZg-4}}}%
+\nwixlogsorted{c}{{Include headers}{NW0-3ji0t0-1}{\nwixu{NW0-5D8f4-1}\nwixd{NW0-3ji0t0-1}\nwixd{NW0-3ji0t0-2}\nwixd{NW0-3ji0t0-3}}}%
+\nwixlogsorted{c}{{Insert new root}{NW0-13oY2G-1}{\nwixu{NW0-1byJZg-2}\nwixd{NW0-13oY2G-1}}}%
+\nwixlogsorted{c}{{Look for maximum distance}{NW0-1NLudF-1}{\nwixu{NW0-2LcRFk-1}\nwixd{NW0-1NLudF-1}}}%
+\nwixlogsorted{c}{{Main function}{NW0-32ejEQ-1}{\nwixu{NW0-5D8f4-1}\nwixd{NW0-32ejEQ-1}}}%
+\nwixlogsorted{c}{{midRoot.c}{NW0-5D8f4-1}{\nwixd{NW0-5D8f4-1}}}%
+\nwixlogsorted{c}{{Rearrange tree}{NW0-3PQBB5-1}{\nwixu{NW0-1byJZg-2}\nwixd{NW0-3PQBB5-1}}}%
+\nwixlogsorted{i}{{\nwixident{c}}{c}}%
+\nwixlogsorted{i}{{\nwixident{d}}{d}}%
+\nwixlogsorted{i}{{\nwixident{dh}}{dh}}%
+\nwixlogsorted{i}{{\nwixident{dlca}}{dlca}}%
+\nwixlogsorted{i}{{\nwixident{dm}}{dm}}%
+\nwixlogsorted{i}{{\nwixident{getLeaves}}{getLeaves}}%
+\nwixlogsorted{i}{{\nwixident{im}}{im}}%
+\nwixlogsorted{i}{{\nwixident{leaves}}{leaves}}%
+\nwixlogsorted{i}{{\nwixident{main}}{main}}%
+\nwixlogsorted{i}{{\nwixident{midRoot}}{midRoot}}%
+\nwixlogsorted{i}{{\nwixident{n}}{n}}%
+\nwixlogsorted{i}{{\nwixident{p}}{p}}%
+\nwixlogsorted{i}{{\nwixident{R}}{R}}%
+\nwixlogsorted{i}{{\nwixident{s}}{s}}%
+\nwixlogsorted{i}{{\nwixident{scanFile}}{scanFile}}%
+\nwixlogsorted{i}{{\nwixident{x1}}{x1}}%
+\nwixlogsorted{i}{{\nwixident{x2}}{x2}}%
+

@@ -1,0 +1,28 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=latex 2018.10.25)  2 MAY 2019 10:33
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**midRoot
+(./midRoot.tex
+LaTeX2e <2017-04-15>
+Babel <3.18> and hyphenation patterns for 38 language(s) loaded.
+! Undefined control sequence.
+l.1 \nwfilename
+               {}\nwbegindocs{0}\nwenddocs{}\nwbegindocs{1}\nwdocspar% ===> ...
+
+? 
+! Emergency stop.
+l.1 \nwfilename
+               {}\nwbegindocs{0}\nwenddocs{}\nwbegindocs{1}\nwdocspar% ===> ...
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 5 strings out of 494222
+ 134 string characters out of 6160714
+ 49109 words of memory out of 5000000
+ 3478 multiletter control sequences out of 15000+600000
+ 3640 words of font info for 14 fonts, out of 8000000 for 9000
+ 395 hyphenation exceptions out of 8191
+ 5i,0n,1p,153b,8s stack positions out of 5000i,500n,10000p,200000b,80000s
+No pages of output.

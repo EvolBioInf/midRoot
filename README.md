@@ -2,7 +2,10 @@
 ## Author
 Bernhard Haubold, `haubold@evolbio.mpg.de`
 ## Description
-DESCRIPTION
+Midpoint rooting of phylogenies.
+## Dependencies
+- noweb
+- latex
 ## Compile
 Compile the sources using `make`; the executable `midRoot` is now in the directory `build`
 ## Documentation

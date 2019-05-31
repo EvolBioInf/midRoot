@@ -38,8 +38,8 @@ int eopen(char *fname, int flag){
 void eprintf(char *fmt, ...){
   va_list args;
   fflush(stdout);
-  if(progname() != NULL)
-    fprintf(stderr, "%s: ", progname());
+  if(getProgName() != NULL)
+    fprintf(stderr, "%s: ", getProgName());
   
   va_start(args, fmt);
   vfprintf(stderr, fmt, args);
@@ -83,12 +83,12 @@ void *erealloc(void *p, size_t n){
 
 static char *name = NULL; /* program name for messages */
 
-/* setprogname2: set stored name of program */
-void setprogname2(char *str){
+/* setProgName: set stored name of program */
+void setProgName(char *str){
   name = estrdup(str);
 }
 
 /* progname: return stured name of program */
-char *progname(void){
+char *getProgName(void){
   return name;
 }
